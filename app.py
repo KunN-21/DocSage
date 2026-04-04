@@ -45,8 +45,8 @@ with st.sidebar:
     st.divider()
 
     available_provider = ['ollama']
-    if config.openai_available():
-        available_provider.append('openai')
+    if config.openrouter_available():
+        available_provider.append('openrouter')
 
     #Select Box
     select_provider = st.selectbox(
@@ -63,9 +63,9 @@ with st.sidebar:
         st.rerun()
 
     provider = st.session_state.current_provider
-    if provider == "openai":
-        st.caption(f"Model: {config.OPENAI_MODEL}")
-        st.caption(f"Fast model: {config.OPENAI_FAST_MODEL}")
+    if provider == "openrouter":
+        st.caption(f"Model: {config.OPENROUTER_MODEL}")
+        st.caption(f"Fast model: {config.OPENROUTER_FAST_MODEL}")
     else:
         st.caption(f"Model: {config.OLLAMA_MODEL}")
         st.caption(f"Fast model: {config.OLLAMA_FAST_MODEL}")
@@ -74,9 +74,10 @@ with st.sidebar:
 # Load model
 if not st.session_state.models_loaded:
     st.info("Đang tải model...")
+    provider = st.session_state.current_provider
     st.session_state.embeddings = load_embeddings()
-    st.session_state.llm = load_llm()
-    st.session_state.fast_llm = load_fast_llm()
+    st.session_state.llm = load_llm(provider)
+    st.session_state.fast_llm = load_fast_llm(provider)
     st.session_state.models_loaded = True
     st.success("Model đã sẵn sàng!")
     st.rerun()

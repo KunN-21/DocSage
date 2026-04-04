@@ -21,7 +21,7 @@
 | 🔍 **Hybrid Retrieval** | Kết hợp Vector Search (Chroma) + BM25 để tối ưu truy xuất |
 | 🧠 **RePhrase + HyDE** | Viết lại câu hỏi + tạo hypothetical answer trước khi retrieval |
 | 📄 **Multi-format Parsing** | Hỗ trợ PDF, JPG, PNG, TIFF qua Azure Document Intelligence |
-| 🤖 **Multi-LLM** | Chuyển đổi giữa Ollama (local) và OpenAI/OpenRouter (cloud) |
+| 🤖 **Multi-LLM** | Chuyển đổi giữa Ollama (local) và OpenRouter (cloud) |
 | 💬 **Chat History** | Giữ ngữ cảnh hội thoại qua các lượt hỏi |
 | 🐳 **Docker Ready** | Dockerfile + Docker Compose cho deployment |
 
@@ -115,15 +115,15 @@ docker run -p 8501:8501 --env-file .env docsage
 AZURE_DOC_INTEL_ENDPOINT=
 AZURE_DOC_INTEL_KEY=
 
-# ── LLM Provider: "ollama" | "openai" ───────────────────────────
+# ── LLM Provider: "ollama" | "openrouter" ───────────────────────
 LLM_PROVIDER=ollama
 
-# ── OpenAI / OpenRouter ─────────────────────────────────────────
-# Dùng OpenRouter: set OPENAI_BASE_URL=https://openrouter.ai/api/v1
-OPENAI_BASE_URL=
-OPENAI_API_KEY=
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_FAST_MODEL=gpt-4o-mini
+# ── OpenRouter (cloud LLM) ──────────────────────────────────────
+# Theo docs ChatOpenRouter: OPENROUTER_API_BASE
+OPENROUTER_API_BASE=https://openrouter.ai/api/v1
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=openrouter/auto
+OPENROUTER_FAST_MODEL=openrouter/auto
 
 # ── Ollama (local LLM) ──────────────────────────────────────────
 OLLAMA_BASE_URL=                    # Để trống = auto-detect
@@ -131,7 +131,7 @@ OLLAMA_MODEL=qwen3.5:4b
 OLLAMA_FAST_MODEL=qwen3.5:2b-q4_K_M
 ```
 
-> **💡 OpenRouter:** Để dùng OpenRouter thay OpenAI, chỉ cần set `OPENAI_BASE_URL=https://openrouter.ai/api/v1` và dùng API key của OpenRouter. Tương thích với bất kỳ provider nào có OpenAI-compatible API.
+> **💡 OpenRouter:** Dùng API key từ OpenRouter, đặt `LLM_PROVIDER=openrouter` và cấu hình model phù hợp theo nhu cầu.
 
 ## 🔄 Luồng xử lý
 
@@ -163,7 +163,7 @@ graph LR
 | **Embedding** | `bkai-foundation-models/vietnamese-bi-encoder` |
 | **Vector DB** | ChromaDB |
 | **LLM (local)** | Ollama (Qwen 3.5) |
-| **LLM (cloud)** | OpenAI / OpenRouter |
+| **LLM (cloud)** | OpenRouter |
 | **Document Parser** | Azure Document Intelligence + PyPDF |
 | **Framework** | LangChain |
 
@@ -174,7 +174,7 @@ graph LR
 | Lỗi kết nối Ollama | Kiểm tra `ollama serve` đang chạy, `ollama list` có model |
 | Trả lời không bám tài liệu | Thử PDF text-based, hỏi cụ thể hơn |
 | Azure DI không hoạt động | Kiểm tra endpoint + key trong `.env` |
-| OpenRouter lỗi 401 | Kiểm tra API key, đảm bảo `OPENAI_BASE_URL` đúng |
+| OpenRouter lỗi 401 | Kiểm tra API key, đảm bảo `OPENROUTER_API_BASE` đúng |
 | Dependency lỗi | `pip install -U pip && pip install -r requirements.txt` |
 
 ## 📝 License
